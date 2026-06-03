@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập | Eng Flash</title>
+    <meta name="description" content="Đăng nhập vào hệ thống học tiếng Anh trực tuyến qua YouTube">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --accent: #06b6d4;
+            --accent-gold: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg-base: #0b0b1a;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-base);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* ---- Animated gradient background ---- */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .bg-orb-1 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #6366f1, transparent);
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+        }
+
+        .bg-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #06b6d4, transparent);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -4s;
+        }
+
+        .bg-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #8b5cf6, transparent);
+            top: 50%;
+            left: 60%;
+            animation-delay: -2s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(30px, -30px) scale(1.05);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.95);
+            }
+        }
+
+        /* ---- Login card ---- */
+        .login-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(32px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---- Logo / Brand ---- */
+        .brand-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 1.25rem;
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+
+        /* ---- Form inputs ---- */
+        .form-label {
+            color: var(--text-muted);
+            font-size: 0.825rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        /* ---- Password toggle ---- */
+        .input-group .form-control {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .input-group .btn-toggle-pw {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border);
+            border-left: none;
+            color: var(--text-muted);
+            border-radius: 0 12px 12px 0;
+            padding: 0 1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .input-group .btn-toggle-pw:hover {
+            color: var(--text-primary);
+        }
+
+        /* ---- Submit button ---- */
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.8rem;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px var(--primary-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login:hover:not(:disabled) {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+
+        .btn-login:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ---- Alert ---- */
+        .alert-error {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            color: #fca5a5;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            display: none;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(6px);
+            }
+        }
+
+        /* ---- Demo accounts pill ---- */
+        .demo-accounts {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .demo-badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 6px;
+            padding: 0.1rem 0.5rem;
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #a5b4fc;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .demo-badge:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+
+        /* ---- Spinner inside button ---- */
+        .spinner-sm {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated background orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+        <!-- Brand -->
+        <div class="text-center mb-4">
+            <img src="../src/logo.png" alt="Eng Flash Logo" style="height:64px; margin-bottom:1.25rem;">
+            <h1 class="fs-4 fw-bold mb-1">Eng Flash</h1>
+            <p class="text-muted mb-0" style="font-size:0.875rem">Đăng nhập để tiếp tục học</p>
+        </div>
+
+        <!-- Error alert -->
+        <div class="alert-error mb-3" id="error-alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span id="error-msg">Tên đăng nhập hoặc mật khẩu không đúng.</span>
+        </div>
+
+        <!-- Login form -->
+        <form id="login-form" novalidate>
+            <div class="mb-3">
+                <label class="form-label" for="inp-username">Tên đăng nhập</label>
+                <input type="text" class="form-control" id="inp-username" placeholder="admin hoặc user1"
+                    autocomplete="username" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label" for="inp-password">Mật khẩu</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="inp-password" placeholder="••••••••"
+                        autocomplete="current-password" required>
+                    <button type="button" class="btn-toggle-pw" id="toggle-pw" title="Hiện/ẩn mật khẩu">
+                        <i class="bi bi-eye" id="toggle-pw-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login" id="btn-submit">
+                <span id="btn-text"><i class="bi bi-box-arrow-in-right me-2"></i>Đăng Nhập</span>
+                <span id="btn-loading" style="display:none">
+                    <span class="spinner-sm me-2"></span> Đang xác thực...
+                </span>
+            </button>
+        </form>
+
+        <!-- Demo accounts hint -->
+
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // ── Nếu đã đăng nhập rồi thì redirect thẳng vào index.html ──
+        if (getCurrentUser()) window.location.replace("../index.html");
+
+        // ── Toggle hiện/ẩn mật khẩu ──
+        document.getElementById("toggle-pw").addEventListener("click", () => {
+            const inp = document.getElementById("inp-password");
+            const icon = document.getElementById("toggle-pw-icon");
+            const isHidden = inp.type === "password";
+            inp.type = isHidden ? "text" : "password";
+            icon.className = isHidden ? "bi bi-eye-slash" : "bi bi-eye";
+        });
+
+        // ── Điền nhanh tài khoản demo ──
+        function fillDemo(username, password) {
+            document.getElementById("inp-username").value = username;
+            document.getElementById("inp-password").value = password;
+            document.getElementById("inp-username").focus();
+        }
+
+        // ── Hiển thị thông báo lỗi ──
+        function showError(msg) {
+            const el = document.getElementById("error-alert");
+            document.getElementById("error-msg").textContent = msg;
+            el.style.display = "block";
+            // Reset animation để shaking lại được
+            el.style.animation = "none";
+            el.offsetHeight; // reflow
+            el.style.animation = "";
+        }
+
+        // ── Trạng thái loading của nút ──
+        function setLoading(isLoading) {
+            const btn = document.getElementById("btn-submit");
+            btn.disabled = isLoading;
+            document.getElementById("btn-text").style.display = isLoading ? "none" : "inline";
+            document.getElementById("btn-loading").style.display = isLoading ? "inline" : "none";
+        }
+
+        // ── Xử lý submit form ──
+        document.getElementById("login-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            document.getElementById("error-alert").style.display = "none";
+
+            const username = document.getElementById("inp-username").value.trim();
+            const password = document.getElementById("inp-password").value;
+
+            if (!username || !password) {
+                showError("Vui lòng nhập tên đăng nhập và mật khẩu.");
+                return;
+            }
+
+            setLoading(true);
+
+            // ── Chiến lược xác thực: Supabase /users trước, fallback hardcode ──
+            const user = await authenticateUser(username, password);
+            setLoading(false);
+
+            if (user) {
+                // Đăng nhập thành công: lưu session → redirect
+                saveSession({
+                    id: user.id,
+                    username: user.username,
+                    role: user.role,
+                    name: user.name || user.username,
+                });
+                window.location.replace("../index.html");
+            } else {
+                showError("Tên đăng nhập hoặc mật khẩu không đúng.");
+                document.getElementById("inp-password").value = "";
+                document.getElementById("inp-password").focus();
+            }
+        });
+
+        /**
+         * Xác thực user: thử gọi Supabase users trước.
+         * Nếu thất bại (mạng lỗi, endpoint không tồn tại, hoặc không tìm thấy user),
+         * sẽ fallback về danh sách FALLBACK_USERS hardcode trong config.js.
+         *
+         * @param {string} username
+         * @param {string} password
+         * @returns {Promise<object|null>} User object nếu thành công, null nếu thất bại
+         */
+        async function authenticateUser(username, password) {
+            // 1. Thử gọi Supabase
+            try {
+                const list = await SupabaseDB.getAll("users", { username: `eq.${username}` });
+                const found = list.find(u =>
+                    u.username === username && u.password === password
+                );
+                if (found) return found;
+
+                // Nếu kết nối thành công nhưng không tìm thấy user
+                if (list.length > 0) return null;
+            } catch (err) {
+                console.warn("[AUTH] Supabase users không khả dụng, dùng fallback hardcode.", err.message);
+            }
+
+            // 2. Fallback về danh sách hardcode
+            const found = FALLBACK_USERS.find(u =>
+                u.username === username && u.password === password
+            );
+            return found || null;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Phát Video | Eng Flash</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99,102,241,0.4);
+            --bg-base: #070714;
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+        }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--bg-base);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        
+        .player-wrapper {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Chặn tương tác trực tiếp lên iframe (như click chuột phải, click chuyển tiếp youtube.com) */
+        .player-shield {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: calc(100% - 50px);
+            z-index: 10;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        #yt-player {
+            width: 100%; height: 100%;
+            border: none;
+        }
+
+        /* ─── CUSTOM CONTROLS BAR ─── */
+        .controls-bar {
+            height: 60px;
+            background: rgba(11, 11, 26, 0.95);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4px 15px 8px 15px;
+            z-index: 20;
+            user-select: none;
+        }
+
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            flex: 1;
+        }
+
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s, color 0.2s;
+        }
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--primary);
+        }
+
+        .time-display {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: monospace;
+            margin-left: 10px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 4px;
+        }
+        .progress-bar-watched {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #06b6d4);
+            border-radius: 3px;
+            width: 0%;
+            position: absolute; left: 0; top: 0;
+            z-index: 2;
+        }
+        /* Hiển thị vùng được phép tua lùi */
+        .progress-bar-allowed {
+            height: 100%;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 3px;
+            width: 0%;
+            position: absolute; left: 0; top: 0;
+            z-index: 1;
+        }
+
+        /* Anti-cheat Flash Warning */
+        .flash-warning {
+            position: absolute;
+            inset: 0;
+            background: rgba(239, 68, 68, 0.15);
+            border: 4px solid var(--danger);
+            z-index: 15;
+            display: none;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flash-text {
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid var(--danger);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Overlay khi tạm dừng hoặc chưa sẵn sàng */
+        .status-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 12;
+            background: rgba(7, 7, 20, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .status-overlay.show {
+            opacity: 1;
+        }
+        .play-icon-overlay {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.85);
+            box-shadow: 0 0 20px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 28px;
+            transform: scale(0.8);
+            transition: transform 0.2s;
+        }
+        .status-overlay.show .play-icon-overlay {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Khung trình phát và các overlay -->
+    <div class="player-wrapper">
+        <div id="yt-player"></div>
+        <div class="player-shield" id="player-shield" onclick="togglePlay()"></div>
+        
+        <!-- Overlay trạng thái (khi pause) -->
+        <div class="status-overlay" id="status-overlay">
+            <div class="play-icon-overlay">
+                <i class="bi bi-play-fill"></i>
+            </div>
+        </div>
+
+        <!-- Cảnh báo khi tua -->
+        <div class="flash-warning" id="flash-warning" style="display:none">
+            <div class="flash-text">
+                <i class="bi bi-shield-fill-x text-danger me-2"></i> Không được tua nhanh qua phần chưa học!
+            </div>
+        </div>
+    </div>
+
+    <!-- Thanh điều khiển Custom -->
+    <div class="controls-bar">
+        <!-- Thanh tiến trình -->
+        <div class="progress-container" id="progress-container" onclick="handleSeek(event)">
+            <div class="progress-bar-allowed" id="progress-allowed"></div>
+            <div class="progress-bar-watched" id="progress-watched"></div>
+        </div>
+        
+        <!-- Nút điều khiển và thông tin thời gian -->
+        <div class="controls-row">
+            <div class="d-flex align-items-center">
+                <button class="control-btn" id="play-btn" onclick="togglePlay()">
+                    <i class="bi bi-play-fill"></i>
+                </button>
+                <button class="control-btn ms-1" id="mute-btn" onclick="toggleMute()">
+                    <i class="bi bi-volume-up-fill"></i>
+                </button>
+                <span class="time-display" id="time-display">00:00 / 00:00</span>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-secondary" id="sync-status" style="font-size: 0.7rem;">Đang kết nối...</span>
+                <button class="control-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
+                    <i class="bi bi-fullscreen"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lấy tham số từ URL
+        const params = new URLSearchParams(window.location.search);
+        const youtubeId = params.get("id");
+        const startSec = parseInt(params.get("start")) || 0;
+        
+        let player = null;
+        let playerState = -1;
+        let maxAllowedTime = startSec;
+        let isMuted = false;
+        let duration = 0;
+        let antiCheatReady = false;
+
+        if (!youtubeId) {
+            document.body.innerHTML = `
+                <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-1 mb-2"></i>
+                    <h5>Không tìm thấy mã Video YouTube!</h5>
+                </div>`;
+            throw new Error("No YouTube ID provided.");
+        }
+
+        // Tải YouTube IFrame Player API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                videoId: youtubeId,
+                host: 'https://www.youtube-nocookie.com',
+                playerVars: {
+                    controls: 0,           // Ẩn control mặc định hoàn toàn
+                    disablekb: 1,          // Tắt phím tắt bàn phím
+                    modestbranding: 1,     // Giảm thương hiệu YT
+                    rel: 0,                // Không gợi ý video khác
+                    playsinline: 1,
+                    fs: 0                  // Tắt nút fullscreen mặc định (ta tự làm)
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Seek đến mốc đã lưu lúc đầu
+            if (startSec > 0) {
+                player.seekTo(startSec, true);
+            }
+
+            duration = player.getDuration();
+            updateTimeUI(startSec);
+
+            // Bật anti-cheat sau 1.5s để tránh nhảy lùi do seekTo lúc khởi tạo
+            setTimeout(() => {
+                antiCheatReady = true;
+                setInterval(checkPlayerProgress, 500);
+            }, 1500);
+
+            // Cập nhật trạng thái kết nối
+            updateSyncStatus("Đã đồng bộ");
+            
+            // Gửi thông tin duration về trang mẹ
+            syncWithParent({
+                type: 'duration',
+                duration: duration
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            playerState = event.data;
+            const playBtn = document.getElementById("play-btn");
+            const statusOverlay = document.getElementById("status-overlay");
+
+            if (playerState === YT.PlayerState.PLAYING) {
+                playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                statusOverlay.classList.remove("show");
+            } else {
+                playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.UNSTARTED) {
+                    statusOverlay.classList.add("show");
+                }
+            }
+
+            // Đồng bộ trạng thái và thời gian về trang cha
+            syncWithParent({
+                type: 'stateChange',
+                state: playerState,
+                currentTime: player ? Math.floor(player.getCurrentTime()) : 0
+            });
+        }
+
+        // ─── CHỐNG TUA & CẬP NHẬT TIẾN ĐỘ ───
+        function checkPlayerProgress() {
+            if (!player || playerState !== YT.PlayerState.PLAYING || !antiCheatReady) return;
+
+            const ct = player.getCurrentTime();
+            duration = player.getDuration() || duration;
+
+            // Nếu người dùng tua quá 3 giây so với mốc lớn nhất đã xem
+            if (ct > maxAllowedTime + 3) {
+                player.seekTo(maxAllowedTime, true);
+                triggerWarning();
+            } else {
+                // Chỉ cập nhật mốc đã xem tối đa
+                maxAllowedTime = Math.max(maxAllowedTime, ct);
+            }
+
+            updateTimeUI(ct);
+
+            // Gửi dữ liệu về trang cha
+            syncWithParent({
+                type: 'progress',
+                currentTime: Math.floor(ct),
+                maxAllowedTime: Math.floor(maxAllowedTime),
+                duration: duration
+            });
+        }
+
+        function triggerWarning() {
+            const warning = document.getElementById("flash-warning");
+            warning.style.display = "flex";
+            setTimeout(() => {
+                warning.style.display = "none";
+            }, 1500);
+            
+            syncWithParent({
+                type: 'warning',
+                message: 'Tua nhanh bị chặn!'
+            });
+        }
+
+        // Cập nhật UI thời gian và thanh tiến trình
+        function updateTimeUI(ct) {
+            if (!duration) return;
+            const pctWatched = (ct / duration) * 100;
+            const pctAllowed = (maxAllowedTime / duration) * 100;
+
+            document.getElementById("progress-watched").style.width = pctWatched + "%";
+            document.getElementById("progress-allowed").style.width = pctAllowed + "%";
+            
+            document.getElementById("time-display").textContent = 
+                formatTime(ct) + " / " + formatTime(duration);
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds) || seconds < 0) return "00:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+        }
+
+        // ─── TƯƠNG TÁC CUSTOM CONTROLS ───
+        function togglePlay() {
+            if (!player) return;
+            if (playerState === YT.PlayerState.PLAYING) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+        }
+
+        function toggleMute() {
+            if (!player) return;
+            isMuted = !isMuted;
+            const muteBtn = document.getElementById("mute-btn");
+            if (isMuted) {
+                player.mute();
+                muteBtn.innerHTML = '<i class="bi bi-volume-mute-fill text-danger"></i>';
+            } else {
+                player.unMute();
+                muteBtn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+            }
+        }
+
+        // Cho phép tua lùi hoặc tua trong phạm vi đã học
+        function handleSeek(event) {
+            if (!player || !duration) return;
+            const rect = document.getElementById("progress-container").getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const clickPct = clickX / rect.width;
+            const targetTime = clickPct * duration;
+
+            // Chỉ cho phép tua tới tối đa là maxAllowedTime
+            if (targetTime <= maxAllowedTime) {
+                player.seekTo(targetTime, true);
+                updateTimeUI(targetTime);
+            } else {
+                // Nếu click xa hơn, chỉ tua tới maxAllowedTime
+                player.seekTo(maxAllowedTime, true);
+                updateTimeUI(maxAllowedTime);
+                triggerWarning();
+            }
+        }
+
+        function toggleFullscreen() {
+            const wrapper = document.querySelector(".player-wrapper");
+            if (!document.fullscreenElement) {
+                if (wrapper.requestFullscreen) {
+                    wrapper.requestFullscreen();
+                } else if (wrapper.webkitRequestFullscreen) {
+                    wrapper.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // ─── GIAO TIẾP VỚI CỬA SỔ CHA ───
+        function syncWithParent(data) {
+            if (window.opener && !window.opener.closed) {
+                try {
+                    // Gọi hàm xử lý trực tiếp ở cửa sổ cha
+                    if (window.opener.onPopupMessage) {
+                        window.opener.onPopupMessage(data);
+                    } else {
+                        // fallback qua postMessage
+                        window.opener.postMessage({ source: 'elearning-player', ...data }, window.location.origin);
+                    }
+                } catch (e) {
+                    updateSyncStatus("Mất đồng bộ");
+                }
+            } else {
+                updateSyncStatus("Đã ngắt kết nối");
+            }
+        }
+
+        function updateSyncStatus(text) {
+            const statusBadge = document.getElementById("sync-status");
+            if (statusBadge) {
+                statusBadge.textContent = text;
+                if (text === "Đã đồng bộ") {
+                    statusBadge.className = "badge bg-success";
+                } else {
+                    statusBadge.className = "badge bg-danger";
+                }
+            }
+        }
+
+        // Tự động lưu khi đóng cửa sổ
+        window.addEventListener("beforeunload", () => {
+            syncWithParent({
+                type: 'unload',
+                currentTime: player ? Math.floor(player.getCurrentTime()) : 0
+            });
+        });
+    </script>
+</body>
+</html>

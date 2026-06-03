@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Điều Khiển Giáo Viên | Eng Flash</title>
+    <meta name="description" content="Trang dành riêng cho Giáo viên để quản lý Chuyên đề, Bài học, tiến trình học viên và chấm điểm bài tập.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --accent: #06b6d4;
+            --accent-gold: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-base: #0b0b1a;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* ─── NAVBAR ─── */
+        .main-nav {
+            background: rgba(11,11,26,0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .navbar-brand {
+            font-weight: 700; font-size: 1.1rem; color: #fff !important;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .brand-logo {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+
+        /* ─── PAGE HEADER ─── */
+        .page-header {
+            background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(6,182,212,0.08) 100%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 2rem 0 0;
+        }
+        .page-header h1 {
+            font-size: 1.6rem; font-weight: 800;
+        }
+
+        /* ─── TABS ─── */
+        .teacher-tabs {
+            border-bottom: 1px solid var(--glass-border);
+            margin-top: 1.5rem;
+            gap: 0.25rem;
+        }
+        .teacher-tabs .nav-link {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            padding: 0.65rem 1.25rem;
+            transition: color 0.2s, border-color 0.2s;
+            background: transparent;
+        }
+        .teacher-tabs .nav-link:hover { color: var(--text-primary); }
+        .teacher-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: transparent;
+        }
+
+        /* ─── STAT CARDS ─── */
+        .stat-summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .stat-summary-icon {
+            width: 48px; height: 48px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; flex-shrink: 0;
+        }
+        .stat-summary-value { font-size: 1.75rem; font-weight: 800; line-height: 1; }
+        .stat-summary-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+        /* ─── ACTION BAR ─── */
+        .action-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 0.75rem; flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+        .section-heading {
+            font-size: 1.1rem; font-weight: 700;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        /* ─── TABLE ─── */
+        .data-table-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+        .data-table {
+            margin: 0; width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table thead tr {
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .data-table thead th {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.9rem 1.25rem;
+            white-space: nowrap;
+            border: none;
+        }
+        .data-table tbody tr {
+            border-bottom: 1px solid var(--glass-border);
+            transition: background 0.15s;
+        }
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .data-table tbody td {
+            padding: 0.9rem 1.25rem;
+            vertical-align: middle;
+            font-size: 0.875rem;
+        }
+        .thumb-sm {
+            width: 72px; height: 48px;
+            object-fit: cover; border-radius: 6px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ─── MODAL ─── */
+        .modal-content {
+            background: #0f0f29 !important;
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--text-primary);
+        }
+        .modal-header {
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .modal-footer {
+            border-bottom: none;
+            border-top: 1px solid var(--glass-border);
+        }
+        .modal-title { font-weight: 700; font-size: 1rem; }
+
+        /* Tabs form modal */
+        .modal-form-tabs {
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 1rem;
+        }
+        .modal-form-tabs .nav-link {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 0.5rem 1rem;
+        }
+        .modal-form-tabs .nav-link.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: transparent;
+        }
+
+        /* ─── BUTTONS ─── */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none; border-radius: 10px; color: #fff;
+            padding: 0.55rem 1.25rem; font-weight: 600; font-size: 0.875rem;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: all 0.2s ease;
+        }
+        .btn-primary-custom:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px var(--primary-glow);
+            opacity: 0.95;
+        }
+        .btn-primary-custom:disabled {
+            opacity: 0.6; cursor: not-allowed;
+        }
+        .btn-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            color: var(--text-primary); display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .btn-icon:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-color: rgba(255,255,255,0.2);
+        }
+        .btn-danger-icon:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        /* Form Inputs */
+        .form-label {
+            color: var(--text-muted); font-size: 0.825rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem;
+        }
+        .form-control, .form-select {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px; color: var(--text-primary);
+            padding: 0.6rem 0.9rem; font-size: 0.9rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-control:focus, .form-select:focus {
+            background: rgba(255,255,255,0.06);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-control::placeholder { color: rgba(255,255,255,0.25); }
+
+        /* Quiz Builder Cards */
+        .quiz-builder-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+        }
+
+        /* Custom Toast Notification */
+        .toast-container-custom {
+            position: fixed; top: 20px; right: 20px; z-index: 1060;
+            display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+        }
+        .custom-toast {
+            background: rgba(16, 185, 129, 0.9);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #fff; border-radius: 10px;
+            padding: 0.75rem 1.25rem; font-size: 0.85rem; font-weight: 500;
+            min-width: 250px; box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+            pointer-events: auto; animation: toastIn 0.3s ease forwards;
+        }
+        .custom-toast.error {
+            background: rgba(239, 68, 68, 0.9);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        @keyframes toastIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
+        @keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateY(-10px)} }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center; padding: 3rem 1.5rem; color: var(--text-muted);
+        }
+        .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.6; }
+
+        /* Filter Pills */
+        .filter-pill {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            border-radius: 20px; color: var(--text-muted); padding: 0.4rem 0.9rem;
+            font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all 0.15s;
+        }
+        .filter-pill:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.15); }
+        .filter-pill.active {
+            background: var(--primary); color: #fff; border-color: var(--primary);
+            box-shadow: 0 4px 10px var(--primary-glow);
+        }
+
+        /* Light theme overrides */
+        body.light-theme {
+            --bg-base: #f8fafc;
+            --bg-card: #ffffff;
+            --glass-border: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-muted: #64748b;
+            background: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        body.light-theme .main-nav {
+            background: rgba(248,250,252,0.95) !important;
+            border-bottom: 1px solid #cbd5e1 !important;
+        }
+        body.light-theme .navbar-brand { color: #0f172a !important; }
+        body.light-theme .page-header {
+            background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(6,182,212,0.04) 100%);
+            border-bottom: 1px solid #cbd5e1 !important;
+        }
+        body.light-theme .page-header h1 { color: #0f172a !important; }
+        body.light-theme .stat-summary-card {
+            background: #ffffff !important; border-color: #cbd5e1 !important;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+        }
+        body.light-theme .stat-summary-value { color: #0f172a !important; }
+        body.light-theme .data-table-wrapper {
+            background: #ffffff !important; border-color: #cbd5e1 !important;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+        }
+        body.light-theme .data-table thead th {
+            background: #f1f5f9 !important; color: #64748b !important;
+        }
+        body.light-theme .data-table tbody tr { border-bottom: 1px solid #f1f5f9 !important; }
+        body.light-theme .data-table tbody tr:hover { background: #f8fafc !important; }
+        body.light-theme .modal-content {
+            background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important;
+        }
+        body.light-theme .form-control, body.light-theme .form-select {
+            background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important;
+        }
+        body.light-theme .form-control::placeholder { color: #94a3b8 !important; }
+        body.light-theme .quiz-builder-card { background: #f8fafc !important; border-color: #cbd5e1 !important; }
+        body.light-theme .filter-pill { background: #ffffff !important; border-color: #cbd5e1 !important; color: #64748b !important; }
+        body.light-theme .filter-pill.active { background: var(--primary) !important; color: #fff !important; }
+        body.light-theme .btn-icon { background: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+        body.light-theme .btn-icon:hover { background: #f1f5f9 !important; }
+    </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="main-nav navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="../index.html">
+            <img src="../src/logo.png" alt="Eng Flash Logo" style="height:32px; margin-right: 8px;">
+            <span>Eng Flash</span>
+        </a>
+        <div class="ms-auto" id="navbar-user"></div>
+    </div>
+</nav>
+
+<div class="toast-container-custom" id="toast-container"></div>
+
+<!-- ══════════════ PAGE HEADER ══════════════ -->
+<div class="page-header">
+    <div class="container-fluid px-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width:48px;height:48px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">
+                👩‍🏫
+            </div>
+            <div>
+                <h1 class="mb-0">Bảng Điều Khiển Giáo Viên</h1>
+                <p class="text-muted mb-0" style="font-size:0.85rem">Quản lý chuyên đề, bài học, chấm điểm và theo dõi học tập</p>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3" id="summary-cards">
+            <div class="col-sm-6 col-lg-3">
+                <div class="stat-summary-card">
+                    <div class="stat-summary-icon" style="background:rgba(99,102,241,0.15);color:var(--primary)">📂</div>
+                    <div>
+                        <div class="stat-summary-value" id="stat-total-sessions">—</div>
+                        <div class="stat-summary-label">Tổng chuyên đề</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="stat-summary-card">
+                    <div class="stat-summary-icon" style="background:rgba(6,182,212,0.15);color:var(--accent)">📚</div>
+                    <div>
+                        <div class="stat-summary-value" id="stat-total-courses">—</div>
+                        <div class="stat-summary-label">Tổng bài học</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="stat-summary-card">
+                    <div class="stat-summary-icon" style="background:rgba(245,158,11,0.15);color:var(--warning)">⏳</div>
+                    <div>
+                        <div class="stat-summary-value" id="stat-pending-grades">—</div>
+                        <div class="stat-summary-label">Bài chờ chấm điểm</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <div class="stat-summary-card">
+                    <div class="stat-summary-icon" style="background:rgba(16,185,129,0.15);color:var(--success)">📝</div>
+                    <div>
+                        <div class="stat-summary-value" id="stat-graded">—</div>
+                        <div class="stat-summary-label">Bài đã chấm điểm</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav teacher-tabs" id="teacherTabs">
+            <li class="nav-item">
+                <button class="nav-link active" id="tab-sessions-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-sessions">
+                    <i class="bi bi-folder2-open me-1"></i> Quản lý Chuyên Đề
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-courses-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-courses">
+                    <i class="bi bi-collection-play me-1"></i> Quản lý Bài Học
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-progress-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-progress">
+                    <i class="bi bi-bar-chart-line me-1"></i> Tiến Độ Học Viên
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-grading-btn"
+                    data-bs-toggle="tab" data-bs-target="#tab-grading">
+                    <i class="bi bi-patch-check me-1"></i> Chấm Điểm Bài Tập
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="tab-content container-fluid px-4 py-4">
+    <!-- TAB 1: QUẢN LÝ CHUYÊN ĐỀ (SESSIONS CRUD) -->
+    <div class="tab-pane fade show active" id="tab-sessions">
+        <div class="action-bar">
+            <div class="section-heading">
+                <i class="bi bi-folder2-open text-primary"></i> Danh Sách Chuyên Đề (Sessions)
+            </div>
+            <button class="btn-primary-custom" onclick="openAddSessionModal()">
+                <i class="bi bi-plus-lg me-1"></i> Thêm chuyên đề mới
+            </button>
+        </div>
+        <div class="data-table-wrapper" id="sessions-table-wrapper">
+            <div class="empty-state"><span class="spinner-sm"></span><p class="mt-2">Đang tải...</p></div>
+        </div>
+    </div>
+
+    <!-- TAB 2: QUẢN LÝ BÀI HỌC (COURSES CRUD) -->
+    <div class="tab-pane fade" id="tab-courses">
+        <div class="action-bar">
+            <div class="section-heading">
+                <i class="bi bi-collection-play text-primary"></i> Danh Sách Bài Học (Lessons)
+            </div>
+            <button class="btn-primary-custom" onclick="openAddCourseModal()">
+                <i class="bi bi-plus-lg me-1"></i> Thêm bài học mới
+            </button>
+        </div>
+        <div class="data-table-wrapper" id="courses-table-wrapper">
+            <div class="empty-state"><span class="spinner-sm"></span><p class="mt-2">Đang tải...</p></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: TIẾN ĐỘ HỌC VIÊN -->
+    <div class="tab-pane fade" id="tab-progress">
+        <div class="action-bar">
+            <div class="section-heading">
+                <i class="bi bi-bar-chart-line text-accent"></i> Chi tiết tiến độ học viên
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <label class="small text-muted me-1 fw-bold">CHỌN CHUYÊN ĐỀ:</label>
+                <select class="form-select form-select-sm d-inline-block" id="progressSessionSelector" style="width: auto" onchange="loadStudentProgress()">
+                    <option value="">-- Chọn chuyên đề --</option>
+                </select>
+            </div>
+        </div>
+        <div class="data-table-wrapper" id="progress-table-wrapper">
+            <div class="empty-state">
+                <div class="empty-icon">👥</div>
+                <p>Chọn một chuyên đề ở trên để xem tiến độ của học viên.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: CHẤM ĐIỂM BÀI TẬP -->
+    <div class="tab-pane fade" id="tab-grading">
+        <div class="action-bar">
+            <div class="section-heading">
+                <i class="bi bi-patch-check text-warning"></i> Chấm điểm bài nộp học viên
+            </div>
+            <div class="d-flex align-items-center gap-2 flex-wrap" id="grading-filters">
+                <button class="filter-pill active" onclick="setGradingFilter('pending')">Chờ chấm điểm</button>
+                <button class="filter-pill" onclick="setGradingFilter('graded')">Đã chấm điểm</button>
+                <button class="filter-pill" onclick="setGradingFilter('all')">Tất cả bài nộp</button>
+            </div>
+        </div>
+        <div class="data-table-wrapper" id="grading-table-wrapper">
+            <div class="empty-state"><span class="spinner-sm"></span><p class="mt-2">Đang tải...</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ MODAL: THÊM / SỬA CHUYÊN ĐỀ ══════════════ -->
+<div class="modal fade" id="sessionModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sessionModalLabel">✨ Thêm chuyên đề mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="session-form" novalidate>
+                    <input type="hidden" id="editSessionId">
+                    <div class="mb-3">
+                        <label class="form-label" for="inputSessionName">Tên chuyên đề *</label>
+                        <input type="text" class="form-control" id="inputSessionName" placeholder="Ví dụ: English for Communication" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="inputSessionDesc">Mô tả ngắn</label>
+                        <textarea class="form-control" id="inputSessionDesc" rows="3" placeholder="Nhập mô tả về chuyên đề..."></textarea>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="inputSessionIsActive" checked>
+                        <label class="form-check-label text-white-50 small ms-1" for="inputSessionIsActive">Kích hoạt hiển thị cho học viên</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn-primary-custom" id="saveSessionBtn" onclick="saveSessionData()">
+                    <i class="bi bi-floppy me-1"></i> Lưu chuyên đề
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ MODAL: THÊM / SỬA BÀI HỌC ══════════════ -->
+<div class="modal fade" id="courseModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="courseModalLabel">Thêm bài học mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <ul class="nav nav-tabs modal-form-tabs mb-4" id="modalFormTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="form-basic-tab" data-bs-toggle="tab" data-bs-target="#form-basic">
+                            <i class="bi bi-info-circle me-1"></i> Thông Tin Cơ Bản
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="form-content-tab" data-bs-toggle="tab" data-bs-target="#form-content">
+                            <i class="bi bi-file-text me-1"></i> Bài tập tự luận & Thực hành
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="form-quiz-tab" data-bs-toggle="tab" data-bs-target="#form-quiz">
+                            <i class="bi bi-patch-question me-1"></i> Bài tập Trắc nghiệm (Quiz)
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="modalFormTabsContent">
+                    <!-- Tab Basic -->
+                    <div class="tab-pane fade show active" id="form-basic">
+                        <form id="course-form" novalidate>
+                            <input type="hidden" id="editCourseId">
+                            <div class="mb-3">
+                                <label class="form-label" for="inputTitle">Tiêu đề bài học *</label>
+                                <input type="text" class="form-control" id="inputTitle" placeholder="Nhập tên bài học..." required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="inputSessionId">Thuộc chuyên đề (Session) *</label>
+                                    <select class="form-select" id="inputSessionId" required>
+                                        <option value="">-- Chọn chuyên đề --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="inputYoutubeId">YouTube Video ID / URL *</label>
+                                    <input type="text" class="form-control" id="inputYoutubeId" placeholder="Ví dụ: dQw4w9WgXcQ" oninput="updateThumbnailPreview()" required>
+                                    <div class="mt-2" id="thumbnail-preview" style="display:none">
+                                        <img src="" id="preview-img" class="thumb-sm" style="width:120px;height:80px;object-fit:cover">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label" for="inputDuration">Thời lượng video (giây) *</label>
+                                    <input type="number" class="form-control" id="inputDuration" value="0" placeholder="0 = Tự động đo" oninput="updateDurationPreview()">
+                                    <div class="form-text text-white-50" id="durationPreview" style="font-size:0.75rem"></div>
+                                </div>
+                                <div class="col-md-6 mb-3 d-flex align-items-end">
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="inputIsActive" checked>
+                                        <label class="form-check-label text-white-50 small ms-1" for="inputIsActive">Kích hoạt bài học</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="tab-pane fade" id="form-content">
+                        <div class="mb-3">
+                            <label class="form-label" for="inputReading">Nội dung bài đọc (Lý thuyết / Từ vựng)</label>
+                            <textarea class="form-control" id="inputReading" rows="4" placeholder="Nhập nội dung bài đọc... Hỗ trợ Markdown nhẹ."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="inputHomework">Yêu cầu bài tập về nhà (BTVN)</label>
+                            <textarea class="form-control" id="inputHomework" rows="3" placeholder="Nhập yêu cầu viết luận, dịch thuật, học viên sẽ chụp ảnh nộp bài..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="inputPractice">Yêu cầu bài tập thực hành (Practice)</label>
+                            <textarea class="form-control" id="inputPractice" rows="3" placeholder="Nhập bài tập thực hành, học viên sẽ làm và chụp ảnh nộp..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab Quiz -->
+                    <div class="tab-pane fade" id="form-quiz">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="small text-white-50">Tạo danh sách các câu hỏi trắc nghiệm cho bài học này.</span>
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="addQuizQuestion()">
+                                <i class="bi bi-plus-lg me-1"></i> Thêm câu hỏi
+                            </button>
+                        </div>
+                        <div id="quiz-questions-list" class="d-flex flex-column gap-3" style="max-height:350px; overflow-y:auto; padding:5px">
+                            <!-- Danh sách câu hỏi quiz tự sinh -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn-primary-custom" id="saveCourseBtn" onclick="saveCourseData()">
+                    <i class="bi bi-floppy me-1"></i> Lưu bài học
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ MODAL: XÁC NHẬN XÓA ══════════════ -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content text-center">
+            <div class="modal-body p-4">
+                <div class="fs-1 text-danger mb-2">🗑️</div>
+                <h5 class="fw-bold text-white mb-2">Xác nhận xoá?</h5>
+                <p class="text-white-50 small mb-4" id="delete-confirm-msg">Hành động này không thể hoàn tác.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Huỷ</button>
+                    <button class="btn btn-danger btn-sm px-3" id="confirmDeleteBtn">Xoá</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ MODAL: CHẤM ĐIỂM BÀI NỘP ══════════════ -->
+<div class="modal fade" id="gradeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="gradeModalLabel">📝 Chấm Điểm Bài Tập Học Viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row">
+                    <!-- Ảnh nộp bài -->
+                    <div class="col-md-7 mb-3 text-center d-flex flex-column justify-content-center" style="background:rgba(0,0,0,0.2); border-radius:10px; min-height:350px; padding:10px">
+                        <span class="text-muted small mb-2"><i class="bi bi-image me-1"></i>Ảnh bài nộp của học viên:</span>
+                        <a id="gradeModalImgLink" href="" target="_blank" title="Click để phóng to ảnh">
+                            <img id="gradeModalImg" src="" alt="Bài nộp học viên" style="max-width: 100%; max-height: 400px; border-radius: 8px; object-fit: contain">
+                        </a>
+                    </div>
+                    <!-- Form chấm điểm -->
+                    <div class="col-md-5">
+                        <input type="hidden" id="gradeProgressId">
+                        <input type="hidden" id="gradeType"> <!-- 'homework' hoặc 'practice' -->
+                        <div class="mb-3">
+                            <label class="form-label">Học viên</label>
+                            <input type="text" class="form-control" id="gradeModalUser" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bài học</label>
+                            <input type="text" class="form-control" id="gradeModalCourse" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phần nộp</label>
+                            <input type="text" class="form-control text-accent fw-bold" id="gradeModalTypeLabel" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="gradeScoreInput">Điểm số (Thang điểm 10) *</label>
+                            <input type="number" class="form-control" id="gradeScoreInput" min="0" max="10" step="1" placeholder="Nhập điểm từ 0 - 10..." required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="gradeCommentInput">Nhận xét của giáo viên</label>
+                            <textarea class="form-control" id="gradeCommentInput" rows="3" placeholder="Nhập lời phê, góp ý cho học viên..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Huỷ</button>
+                <button type="button" class="btn-primary-custom" id="btnSaveGrade" onclick="saveGrade()">
+                    <i class="bi bi-check-lg me-1"></i> Lưu điểm & nhận xét
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ MODAL: TIẾN ĐỘ CHI TIẾT HỌC VIÊN ══════════════ -->
+<div class="modal fade" id="studentProgressModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="studentProgressModalLabel">📊 Tiến độ chi tiết: <span id="progressModalStudentName"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4" style="max-height: 450px; overflow-y: auto;">
+                <h6 class="mb-3 text-accent"><i class="bi bi-folder2-open me-1"></i>Chuyên đề: <span id="progressModalSessionName"></span></h6>
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover small" style="--bs-table-bg: transparent; border: 1px solid var(--glass-border)">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Bài học</th>
+                                <th>Video</th>
+                                <th>Trắc nghiệm</th>
+                                <th>BTVN</th>
+                                <th>Thực hành</th>
+                            </tr>
+                        </thead>
+                        <tbody id="progressModalTableBody">
+                            <!-- Chèn chi tiết qua JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    // ── Kiểm tra quyền Giáo viên ──
+    const currentUser = checkTeacher();
+    if (!currentUser) throw new Error("Redirect to index");
+
+    renderNavbarUser();
+    initTheme();
+
+    let allSessions = [];
+    let allCourses = [];
+    let allUsers = [];
+    let allProgress = [];
+    let gradingFilter = "pending"; // 'pending', 'graded', 'all'
+
+    // Khởi chạy khi DOM load
+    window.addEventListener("DOMContentLoaded", async () => {
+        await loadAllData();
+        
+        // Gán sự kiện khi tab thay đổi
+        document.getElementById("tab-sessions-btn").addEventListener("shown.bs.tab", loadSessionsTab);
+        document.getElementById("tab-courses-btn").addEventListener("shown.bs.tab", loadCoursesTab);
+        document.getElementById("tab-progress-btn").addEventListener("shown.bs.tab", loadProgressTab);
+        document.getElementById("tab-grading-btn").addEventListener("shown.bs.tab", loadGradingTab);
+        
+        // Mặc định load Tab 1
+        await loadSessionsTab();
+    });
+
+    async function loadAllData() {
+        try {
+            allSessions = await SupabaseDB.getAll("sessions");
+            allCourses = await SupabaseDB.getAll("courses");
+            allUsers = await SupabaseDB.getAll("users");
+            allProgress = await SupabaseDB.getAll("progress");
+            updateSummaryStats();
+            populateProgressSessionSelector();
+        } catch (err) {
+            console.error("Lỗi đồng bộ dữ liệu:", err);
+            showToast("⚠️ Lỗi đồng bộ dữ liệu với Supabase", "error");
+        }
+    }
+
+    function updateSummaryStats() {
+        document.getElementById("stat-total-sessions").textContent = allSessions.length;
+        document.getElementById("stat-total-courses").textContent = allCourses.length;
+
+        // Đếm bài nộp chờ chấm và đã chấm
+        let pending = 0;
+        let graded = 0;
+        allProgress.forEach(p => {
+            if (p.homeworkSubmitted) {
+                if (p.homeworkScore !== null && p.homeworkScore !== undefined) graded++;
+                else pending++;
+            }
+            if (p.practiceSubmitted) {
+                if (p.practiceScore !== null && p.practiceScore !== undefined) graded++;
+                else pending++;
+            }
+        });
+
+        document.getElementById("stat-pending-grades").textContent = pending;
+        document.getElementById("stat-graded").textContent = graded;
+    }
+
+    function showToast(msg, type = "success") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `custom-toast ${type === "error" ? "error" : ""}`;
+        toast.innerHTML = msg;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = "toastOut 0.3s ease forwards";
+            setTimeout(() => toast.remove(), 350);
+        }, 3500);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    //  TAB 1: QUẢN LÝ CHUYÊN ĐỀ (SESSIONS CRUD)
+    // ══════════════════════════════════════════════════════════════
+
+    async function loadSessionsTab() {
+        const wrapper = document.getElementById("sessions-table-wrapper");
+        wrapper.innerHTML = `<div class="empty-state"><span class="spinner-sm"></span><p class="mt-2">Đang tải...</p></div>`;
+        try {
+            allSessions = await SupabaseDB.getAll("sessions");
+            allCourses = await SupabaseDB.getAll("courses");
+            renderSessionsTable();
+            updateSummaryStats();
+        } catch (err) {
+            console.error("Lỗi tải Sessions:", err);
+            wrapper.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Không thể tải dữ liệu chuyên đề</p></div>`;
+        }
+    }
+
+    function renderSessionsTable() {
+        const wrapper = document.getElementById("sessions-table-wrapper");
+        if (allSessions.length === 0) {
+            wrapper.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📂</div>
+                    <h6>Chưa có chuyên đề nào</h6>
+                    <p style="font-size:0.85rem">Nhấn "Thêm chuyên đề mới" để bắt đầu.</p>
+                </div>`;
+            return;
+        }
+
+        allSessions.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+        wrapper.innerHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Tên Chuyên Đề</th>
+                        <th>Mô Tả</th>
+                        <th>Số Bài Học</th>
+                        <th>Trạng Thái</th>
+                        <th>Ngày Tạo</th>
+                        <th style="text-align:right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${allSessions.map(s => {
+                        const lessonCount = allCourses.filter(c => c.sessionId === s.id).length;
+                        const activeBadge = s.isActive !== false
+                            ? `<span class="badge bg-success" style="font-size: 0.68rem"><i class="bi bi-eye-fill me-1"></i>Hoạt động</span>`
+                            : `<span class="badge bg-danger" style="font-size: 0.68rem"><i class="bi bi-eye-slash-fill me-1"></i>Đã Ẩn</span>`;
+
+                        return `
+                        <tr>
+                            <td style="font-weight:600;max-width:220px">${escapeHtml(s.name)}</td>
+                            <td style="font-size:0.82rem;color:var(--text-muted);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(s.description || '')}">
+                                ${escapeHtml(s.description) || '<span class="text-muted small">Không có mô tả</span>'}
+                            </td>
+                            <td style="font-size:0.82rem;color:var(--text-muted)">${lessonCount} bài học</td>
+                            <td>${activeBadge}</td>
+                            <td style="color:var(--text-muted);font-size:0.82rem">${formatDate(s.created_at)}</td>
+                            <td style="text-align:right">
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <button class="btn-icon" onclick="openEditSessionModal(${JSON.stringify(s).replace(/"/g, '&quot;')})" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn-icon btn-danger-icon" onclick="confirmDeleteSession('${s.id}', '${s.name.replace(/'/g, "\\\'")}')" title="Xoá">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>`;
+    }
+
+    function openAddSessionModal() {
+        document.getElementById("sessionModalLabel").textContent = "✨ Thêm chuyên đề mới";
+        document.getElementById("session-form").reset();
+        document.getElementById("editSessionId").value = "";
+        document.getElementById("inputSessionIsActive").checked = true;
+        new bootstrap.Modal(document.getElementById("sessionModal")).show();
+    }
+
+    function openEditSessionModal(session) {
+        document.getElementById("sessionModalLabel").textContent = "✏️ Chỉnh sửa chuyên đề";
+        document.getElementById("editSessionId").value = session.id;
+        document.getElementById("inputSessionName").value = session.name || "";
+        document.getElementById("inputSessionDesc").value = session.description || "";
+        document.getElementById("inputSessionIsActive").checked = session.isActive !== false;
+        new bootstrap.Modal(document.getElementById("sessionModal")).show();
+    }
+
+    async function saveSessionData() {
+        const id = document.getElementById("editSessionId").value;
+        const name = document.getElementById("inputSessionName").value.trim();
+        const description = document.getElementById("inputSessionDesc").value.trim();
+        const isActive = document.getElementById("inputSessionIsActive").checked;
+
+        if (!name) {
+            showToast("Vui lòng nhập Tên chuyên đề.", "error");
+            return;
+        }
+
+        const btn = document.getElementById("saveSessionBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-sm me-1"></span> Đang lưu...`;
+
+        const payload = { name, description, isActive };
+
+        try {
+            if (id) {
+                await SupabaseDB.update("sessions", id, payload);
+            } else {
+                await SupabaseDB.create("sessions", payload);
+            }
+            bootstrap.Modal.getInstance(document.getElementById("sessionModal")).hide();
+            showToast("✅ Đã lưu chuyên đề thành công!");
+            await loadSessionsTab();
+        } catch (err) {
+            console.error("Lỗi lưu session:", err);
+            showToast(`❌ Lỗi: ${err.message}`, "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-floppy me-1"></i> Lưu chuyên đề`;
+        }
+    }
+
+    let pendingDeleteSessionId = null;
+    function confirmDeleteSession(id, name) {
+        pendingDeleteSessionId = id;
+        document.getElementById("delete-confirm-msg").textContent = `Xoá chuyên đề "${name}"? Các bài học thuộc chuyên đề này sẽ bị ngắt liên kết.`;
+        document.getElementById("confirmDeleteBtn").onclick = deleteSession;
+        new bootstrap.Modal(document.getElementById("deleteModal")).show();
+    }
+
+    async function deleteSession() {
+        if (!pendingDeleteSessionId) return;
+        const btn = document.getElementById("confirmDeleteBtn");
+        btn.disabled = true; btn.textContent = "Đang xoá...";
+        try {
+            await SupabaseDB.delete("sessions", pendingDeleteSessionId);
+            bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+            showToast("🗑️ Xoá chuyên đề thành công!");
+            pendingDeleteSessionId = null;
+            await loadSessionsTab();
+        } catch (err) {
+            showToast(`❌ Xoá thất bại: ${err.message}`, "error");
+        } finally {
+            btn.disabled = false; btn.textContent = "Xoá";
+        }
+    }
+
+
+    // ══════════════════════════════════════════════════════════════
+    //  TAB 2: QUẢN LÝ BÀI HỌC (COURSES CRUD)
+    // ══════════════════════════════════════════════════════════════
+
+    let quizQuestions = [];
+
+    async function loadCoursesTab() {
+        const wrapper = document.getElementById("courses-table-wrapper");
+        wrapper.innerHTML = `<div class="empty-state"><span class="spinner-sm"></span><p class="mt-2">Đang tải...</p></div>`;
+        try {
+            allSessions = await SupabaseDB.getAll("sessions");
+            allCourses = await SupabaseDB.getAll("courses");
+            renderCoursesTable();
+            updateSummaryStats();
+        } catch (err) {
+            console.error("Lỗi tải Courses:", err);
+            wrapper.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Không thể tải dữ liệu bài học</p></div>`;
+        }
+    }
+
+    function renderCoursesTable() {
+        const wrapper = document.getElementById("courses-table-wrapper");
+        if (allCourses.length === 0) {
+            wrapper.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <h6>Chưa có bài học nào</h6>
+                    <p style="font-size:0.85rem">Nhấn "Thêm bài học mới" để bắt đầu.</p>
+                </div>`;
+            return;
+        }
+
+        allCourses.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+        wrapper.innerHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Thumbnail</th>
+                        <th>Tiêu đề</th>
+                        <th>Chuyên đề</th>
+                        <th>YouTube ID</th>
+                        <th>Thời lượng</th>
+                        <th>Trạng thái</th>
+                        <th>Các Phần Học</th>
+                        <th style="text-align:right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${allCourses.map(c => {
+                        const quizCount = Array.isArray(c.quiz) ? c.quiz.length : 0;
+                        const parts = [];
+                        if (c.reading && c.reading.trim()) parts.push("Bài đọc");
+                        if (c.homework && c.homework.trim()) parts.push("BTVN");
+                        if (c.practice && c.practice.trim()) parts.push("Thực hành");
+                        if (quizCount > 0) parts.push(`Quiz (${quizCount} câu)`);
+
+                        const partsBadge = parts.length > 0 
+                            ? parts.map(p => `<span class="badge bg-secondary me-1" style="font-size: 0.68rem">${p}</span>`).join("")
+                            : `<span class="badge bg-dark text-muted me-1" style="font-size: 0.68rem">Chỉ có Video</span>`;
+
+                        const sessionObj = allSessions.find(s => s.id === c.sessionId);
+                        const sessionName = sessionObj ? escapeHtml(sessionObj.name) : `<span class="text-danger small">Chưa gán</span>`;
+                        const activeBadge = c.isActive !== false
+                            ? `<span class="badge bg-success" style="font-size: 0.68rem"><i class="bi bi-eye-fill me-1"></i>Hoạt động</span>`
+                            : `<span class="badge bg-danger" style="font-size: 0.68rem"><i class="bi bi-eye-slash-fill me-1"></i>Đã Ẩn</span>`;
+
+                        return `
+                        <tr>
+                            <td>
+                                <img src="https://img.youtube.com/vi/${c.youtubeId}/default.jpg" class="thumb-sm" alt="${escapeHtml(c.title)}">
+                            </td>
+                            <td style="font-weight:500;max-width:180px">${escapeHtml(c.title)}</td>
+                            <td style="font-size:0.82rem;color:var(--text-muted)">${sessionName}</td>
+                            <td>
+                                <a href="https://youtu.be/${c.youtubeId}" target="_blank" style="color:var(--accent);font-family:monospace;font-size:0.82rem">
+                                    ${c.youtubeId} <i class="bi bi-box-arrow-up-right" style="font-size:0.7rem"></i>
+                                </a>
+                            </td>
+                            <td style="color:var(--text-muted);font-size:0.82rem">${c.duration ? `${Math.floor(c.duration/60)}p ${c.duration%60}s` : 'Tự động'}</td>
+                            <td>${activeBadge}</td>
+                            <td>${partsBadge}</td>
+                            <td style="text-align:right">
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <button class="btn-icon" onclick="openEditCourseModal(${JSON.stringify(c).replace(/"/g, '&quot;')})" title="Sửa">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn-icon btn-danger-icon" onclick="confirmDeleteCourse('${c.id}', '${c.title.replace(/'/g, "\\\'")}')" title="Xoá">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>`;
+    }
+
+    function populateSessionDropdown() {
+        const select = document.getElementById("inputSessionId");
+        select.innerHTML = `<option value="">-- Chọn chuyên đề --</option>`;
+        
+        const sorted = [...allSessions].sort((a,b) => new Date(a.created_at||0) - new Date(b.created_at||0));
+        sorted.forEach(s => {
+            select.innerHTML += `<option value="${s.id}">${escapeHtml(s.name)} ${s.isActive === false ? '(Đã ẩn)' : ''}</option>`;
+        });
+    }
+
+    function openAddCourseModal() {
+        populateSessionDropdown();
+        document.getElementById("courseModalLabel").textContent = "✨ Thêm bài học mới";
+        document.getElementById("course-form").reset();
+        document.getElementById("editCourseId").value = "";
+        document.getElementById("inputSessionId").value = "";
+        document.getElementById("inputReading").value = "";
+        document.getElementById("inputHomework").value = "";
+        document.getElementById("inputPractice").value = "";
+        document.getElementById("inputIsActive").checked = true;
+        document.getElementById("thumbnail-preview").style.display = "none";
+        document.getElementById("durationPreview").textContent = "";
+        quizQuestions = [];
+        renderQuizBuilder();
+
+        bootstrap.Tab.getOrCreateInstance(document.querySelector('#form-basic-tab')).show();
+        new bootstrap.Modal(document.getElementById("courseModal")).show();
+    }
+
+    function openEditCourseModal(course) {
+        populateSessionDropdown();
+        document.getElementById("courseModalLabel").textContent = "✏️ Chỉnh sửa bài học";
+        document.getElementById("editCourseId").value = course.id;
+        document.getElementById("inputTitle").value = course.title || "";
+        document.getElementById("inputYoutubeId").value = course.youtubeId || "";
+        document.getElementById("inputDuration").value = course.duration || 0;
+        document.getElementById("inputSessionId").value = course.sessionId || "";
+        document.getElementById("inputReading").value = course.reading || "";
+        document.getElementById("inputHomework").value = course.homework || "";
+        document.getElementById("inputPractice").value = course.practice || "";
+        document.getElementById("inputIsActive").checked = course.isActive !== false;
+
+        updateThumbnailPreview();
+        updateDurationPreview();
+
+        quizQuestions = Array.isArray(course.quiz) ? JSON.parse(JSON.stringify(course.quiz)) : [];
+        renderQuizBuilder();
+
+        bootstrap.Tab.getOrCreateInstance(document.querySelector('#form-basic-tab')).show();
+        new bootstrap.Modal(document.getElementById("courseModal")).show();
+    }
+
+    function extractYoutubeId(input) {
+        if (!input) return "";
+        const s = input.trim();
+        const shortMatch = s.match(/youtu\.be\/([\w-]{11})/);
+        if (shortMatch) return shortMatch[1];
+        const longMatch = s.match(/[?&]v=([\w-]{11})/);
+        if (longMatch) return longMatch[1];
+        if (/^[\w-]{11}$/.test(s)) return s;
+        return s;
+    }
+
+    function updateThumbnailPreview() {
+        const raw = document.getElementById("inputYoutubeId").value;
+        const ytId = extractYoutubeId(raw);
+        const wrapper = document.getElementById("thumbnail-preview");
+        const img = document.getElementById("preview-img");
+
+        if (ytId && ytId !== raw.trim()) {
+            document.getElementById("inputYoutubeId").value = ytId;
+        }
+
+        if (ytId.length >= 8) {
+            img.src = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+            wrapper.style.display = "block";
+        } else {
+            wrapper.style.display = "none";
+        }
+    }
+
+    function updateDurationPreview() {
+        const sec = parseInt(document.getElementById("inputDuration").value);
+        const el = document.getElementById("durationPreview");
+        if (!isNaN(sec) && sec > 0) {
+            const m = Math.floor(sec / 60), s = sec % 60;
+            el.textContent = `≈ ${m} phút ${s} giây`;
+        } else {
+            el.textContent = "Nhập 0 hoặc để trống: Tự động đo khi học viên xem lần đầu";
+        }
+    }
+
+    // Quiz builder helpers
+    function renderQuizBuilder() {
+        const container = document.getElementById("quiz-questions-list");
+        if (quizQuestions.length === 0) {
+            container.innerHTML = `<div class="text-center text-muted small py-3">Bài học chưa có câu hỏi trắc nghiệm nào.</div>`;
+            return;
+        }
+
+        container.innerHTML = quizQuestions.map((q, idx) => {
+            const opts = Array.isArray(q.options) ? q.options : ["", "", "", ""];
+            return `
+            <div class="quiz-builder-card" data-index="${idx}">
+                <button type="button" class="btn-icon btn-danger-icon" style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:6px" onclick="removeQuizQuestion(${idx})" title="Xoá câu hỏi">
+                    <i class="bi bi-x" style="font-size:0.9rem"></i>
+                </button>
+                <div class="mb-2">
+                    <label class="form-label" style="font-size:0.75rem">Câu hỏi ${idx + 1} *</label>
+                    <input type="text" class="form-control form-control-sm quiz-q-text" value="${escapeHtml(q.question)}" placeholder="Nhập nội dung câu hỏi..." onchange="saveCurrentBuilderState()">
+                </div>
+                <div class="row g-2">
+                    ${opts.map((opt, oIdx) => {
+                        const letter = String.fromCharCode(65 + oIdx);
+                        const isChecked = parseInt(q.correct) === oIdx ? "checked" : "";
+                        return `
+                        <div class="col-sm-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-dark border-secondary">
+                                    <input type="radio" name="quiz-correct-${idx}" value="${oIdx}" ${isChecked} onchange="saveCurrentBuilderState()" style="cursor:pointer">
+                                    <span class="ms-1 small fw-bold text-light">${letter}</span>
+                                </span>
+                                <input type="text" class="form-control quiz-opt-input" value="${escapeHtml(opt)}" placeholder="Đáp án ${letter}..." onchange="saveCurrentBuilderState()">
+                            </div>
+                        </div>`;
+                    }).join("")}
+                </div>
+            </div>`;
+        }).join("");
+    }
+
+    function addQuizQuestion() {
+        saveCurrentBuilderState();
+        quizQuestions.push({
+            question: "",
+            options: ["", "", "", ""],
+            correct: 0
+        });
+        renderQuizBuilder();
+    }
+
+    function removeQuizQuestion(idx) {
+        saveCurrentBuilderState();
+        quizQuestions.splice(idx, 1);
+        renderQuizBuilder();
+    }
+
+    function saveCurrentBuilderState() {
+        const cards = document.querySelectorAll(".quiz-builder-card");
+        const updatedList = [];
+        
+        cards.forEach(card => {
+            const idx = parseInt(card.dataset.index);
+            const question = card.querySelector(".quiz-q-text").value.trim();
+            
+            const optInputs = card.querySelectorAll(".quiz-opt-input");
+            const options = Array.from(optInputs).map(inp => inp.value.trim());
+
+            const correctRadio = card.querySelector(`input[name="quiz-correct-${idx}"]:checked`);
+            const correct = correctRadio ? parseInt(correctRadio.value) : 0;
+
+            updatedList.push({ question, options, correct });
+        });
+
+        quizQuestions = updatedList;
+    }
+
+    async function saveCourseData() {
+        saveCurrentBuilderState();
+
+        const id = document.getElementById("editCourseId").value;
+        const title = document.getElementById("inputTitle").value.trim();
+        const sessionId = document.getElementById("inputSessionId").value;
+        const youtubeId = extractYoutubeId(document.getElementById("inputYoutubeId").value);
+        const duration = parseInt(document.getElementById("inputDuration").value) || 0;
+        const reading = document.getElementById("inputReading").value.trim();
+        const homework = document.getElementById("inputHomework").value.trim();
+        const practice = document.getElementById("inputPractice").value.trim();
+        const isActive = document.getElementById("inputIsActive").checked;
+
+        if (!title || !sessionId || !youtubeId) {
+            showToast("Vui lòng điền đầy đủ Tiêu đề, Chuyên đề và YouTube ID.", "error");
+            return;
+        }
+
+        // Kiểm tra tính hợp lệ của Quiz
+        const validQuiz = quizQuestions.filter(q => q.question.trim() !== "");
+
+        const btn = document.getElementById("saveCourseBtn");
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-sm me-1"></span> Đang lưu...`;
+
+        const payload = {
+            title, sessionId, youtubeId, duration, reading, homework, practice, isActive,
+            quiz: validQuiz
+        };
+
+        try {
+            if (id) {
+                await SupabaseDB.update("courses", id, payload);
+            } else {
+                await SupabaseDB.create("courses", payload);
+            }
+            bootstrap.Modal.getInstance(document.getElementById("courseModal")).hide();
+            showToast("✅ Đã lưu bài học thành công!");
+            await loadCoursesTab();
+        } catch (err) {
+            console.error("Lỗi lưu bài học:", err);
+            showToast(`❌ Lỗi: ${err.message}`, "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-floppy me-1"></i> Lưu bài học`;
+        }
+    }
+
+    let pendingDeleteCourseId = null;
+    function confirmDeleteCourse(id, name) {
+        pendingDeleteCourseId = id;
+        document.getElementById("delete-confirm-msg").textContent = `Xoá bài học "${name}"? Các thống kê học tập và bài nộp liên quan cũng sẽ bị ảnh hưởng.`;
+        document.getElementById("confirmDeleteBtn").onclick = deleteCourse;
+        new bootstrap.Modal(document.getElementById("deleteModal")).show();
+    }
+
+    async function deleteCourse() {
+        if (!pendingDeleteCourseId) return;
+        const btn = document.getElementById("confirmDeleteBtn");
+        btn.disabled = true; btn.textContent = "Đang xoá...";
+        try {
+            await SupabaseDB.delete("courses", pendingDeleteCourseId);
+            bootstrap.Modal.getInstance(document.getElementById("deleteModal")).hide();
+            showToast("🗑️ Xoá bài học thành công!");
+            pendingDeleteCourseId = null;
+            await loadCoursesTab();
+        } catch (err) {
+            showToast(`❌ Xoá thất bại: ${err.message}`, "error");
+        } finally {
+            btn.disabled = false; btn.textContent = "Xoá";
+        }
+    }
+
+
+    // ══════════════════════════════════════════════════════════════
+    //  TAB 3: TIẾN ĐỘ HỌC VIÊN
+    // ══════════════════════════════════════════════════════════════
+
+    function populateProgressSessionSelector() {
+        const selector = document.getElementById("progressSessionSelector");
+        selector.innerHTML = `<option value="">-- Chọn chuyên đề --</option>`;
+        
+        const sorted = [...allSessions].sort((a,b) => new Date(a.created_at||0) - new Date(b.created_at||0));
+        sorted.forEach(s => {
+            selector.innerHTML += `<option value="${s.id}">${escapeHtml(s.name)}</option>`;
+        });
+    }
+
+    async function loadProgressTab() {
+        const selector = document.getElementById("progressSessionSelector");
+        const val = selector.value;
+        try {
+            allSessions = await SupabaseDB.getAll("sessions");
+            allCourses = await SupabaseDB.getAll("courses");
+            allUsers = await SupabaseDB.getAll("users");
+            allProgress = await SupabaseDB.getAll("progress");
+            populateProgressSessionSelector();
+            selector.value = val;
+            
+            if (val) {
+                loadStudentProgress();
+            }
+        } catch (err) {
+            console.error("Lỗi đồng bộ dữ liệu tiến độ:", err);
+        }
+    }
+
+    function loadStudentProgress() {
+        const sessionId = document.getElementById("progressSessionSelector").value;
+        const wrapper = document.getElementById("progress-table-wrapper");
+
+        if (!sessionId) {
+            wrapper.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">👥</div>
+                    <p>Chọn một chuyên đề ở trên để xem tiến độ của học viên.</p>
+                </div>`;
+            return;
+        }
+
+        // Lọc bài học thuộc session
+        const sessionCourses = allCourses.filter(c => c.sessionId === sessionId && c.isActive !== false);
+        sessionCourses.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+        if (sessionCourses.length === 0) {
+            wrapper.innerHTML = `<div class="empty-state">Chuyên đề này chưa có bài học nào được kích hoạt.</div>`;
+            return;
+        }
+
+        // Lọc những học viên (role = user) được phân quyền chuyên đề này
+        const studentUsers = allUsers.filter(u => {
+            if (u.role === "admin") return false; // Không hiện admin
+            const enrolled = Array.isArray(u.enrolledSessions) ? u.enrolledSessions : [];
+            return enrolled.includes(sessionId);
+        });
+
+        if (studentUsers.length === 0) {
+            wrapper.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">👥</div>
+                    <h6>Chưa có học viên nào được gán chuyên đề này</h6>
+                    <p class="small">Vui lòng liên hệ Admin phân quyền chuyên đề cho học viên trước.</p>
+                </div>`;
+            return;
+        }
+
+        wrapper.innerHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Học Viên</th>
+                        <th>Username</th>
+                        <th>Bài học đã xong</th>
+                        <th>Tiến độ chuyên đề</th>
+                        <th>Trạng thái bỏ qua khoá</th>
+                        <th style="text-align:right">Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${studentUsers.map(student => {
+                        const studentProgList = allProgress.filter(p => p.userId === student.id);
+                        
+                        // Tính số bài học hoàn thành trong chuyên đề này
+                        let completedCount = 0;
+                        sessionCourses.forEach(c => {
+                            const p = studentProgList.find(prog => prog.courseId === c.id);
+                            if (p && p.isCompleted) completedCount++;
+                        });
+
+                        const progressPercent = Math.round((completedCount / sessionCourses.length) * 100);
+
+                        return `
+                        <tr>
+                            <td style="font-weight:600">${escapeHtml(student.name || student.username)}</td>
+                            <td style="font-family:monospace;color:var(--accent)">${escapeHtml(student.username)}</td>
+                            <td>${completedCount} / ${sessionCourses.length} bài</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress" style="width:100px;height:6px;background:rgba(255,255,255,0.08);border-radius:3px">
+                                        <div class="progress-bar bg-success" style="width:${progressPercent}%"></div>
+                                    </div>
+                                    <span class="small fw-bold">${progressPercent}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge ${student.bypassSequence ? 'bg-success' : 'bg-secondary'}" style="font-size:0.7rem">
+                                    ${student.bypassSequence ? 'Tự do (Bypass)' : 'Học tuần tự'}
+                                </span>
+                            </td>
+                            <td style="text-align:right">
+                                <button class="btn-primary-custom px-2 py-1" style="font-size:0.75rem" onclick="openStudentProgressModal('${student.id}', '${student.name.replace(/'/g, "\\\'")}', '${sessionId}')">
+                                    Xem bảng điểm
+                                </button>
+                            </td>
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>`;
+    }
+
+    function openStudentProgressModal(studentId, studentName, sessionId) {
+        const student = allUsers.find(u => u.id === studentId);
+        const session = allSessions.find(s => s.id === sessionId);
+        
+        document.getElementById("progressModalStudentName").textContent = studentName;
+        document.getElementById("progressModalSessionName").textContent = session ? session.name : "";
+
+        const sessionCourses = allCourses.filter(c => c.sessionId === sessionId && c.isActive !== false);
+        sessionCourses.sort((a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0));
+
+        const studentProgList = allProgress.filter(p => p.userId === studentId);
+
+        const tbody = document.getElementById("progressModalTableBody");
+        tbody.innerHTML = sessionCourses.map((c, idx) => {
+            const p = studentProgList.find(prog => prog.courseId === c.id);
+            const duration = c.duration ? `${Math.floor(c.duration/60)}p ${c.duration%60}s` : 'Tự động';
+            
+            // Video progress
+            const videoPercent = p ? calcPercent(p.currentTime, c.duration) : 0;
+            const videoStatus = p?.isCompleted 
+                ? `<span class="text-success"><i class="bi bi-check-circle-fill me-1"></i>Xong (${videoPercent}%)</span>` 
+                : (videoPercent > 0 ? `<span class="text-warning">Đang xem (${videoPercent}%)</span>` : `<span class="text-muted">Chưa xem</span>`);
+
+            // Quiz score
+            const hasQuiz = Array.isArray(c.quiz) && c.quiz.length > 0;
+            let quizStatus = `<span class="text-muted">Không có</span>`;
+            if (hasQuiz) {
+                quizStatus = p?.quizDone 
+                    ? `<span class="badge bg-success-subtle text-success border border-success-subtle">${p.quizScore}%</span>`
+                    : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle">Chưa làm</span>`;
+            }
+
+            // Homework score
+            let hwStatus = `<span class="text-muted">Chưa nộp</span>`;
+            if (p?.homeworkSubmitted) {
+                hwStatus = (p.homeworkScore !== null && p.homeworkScore !== undefined)
+                    ? `<span class="badge bg-info-subtle text-info border border-info-subtle">${p.homeworkScore}/10</span>`
+                    : `<span class="badge bg-warning-subtle text-warning border border-warning-subtle">Chờ chấm</span>`;
+            }
+
+            // Practice score
+            let pracStatus = `<span class="text-muted">Chưa nộp</span>`;
+            if (p?.practiceSubmitted) {
+                pracStatus = (p.practiceScore !== null && p.practiceScore !== undefined)
+                    ? `<span class="badge bg-info-subtle text-info border border-info-subtle">${p.practiceScore}/10</span>`
+                    : `<span class="badge bg-warning-subtle text-warning border border-warning-subtle">Chờ chấm</span>`;
+            }
+
+            return `
+            <tr>
+                <td>${idx + 1}</td>
+                <td style="font-weight:600">${escapeHtml(c.title)}</td>
+                <td>${videoStatus}</td>
+                <td>${quizStatus}</td>
+                <td>${hwStatus}</td>
+                <td>${pracStatus}</td>
+            </tr>`;
+        }).join("");
+
+        new bootstrap.Modal(document.getElementById("studentProgressModal")).show();
+    }
+
+
+    // ══════════════════════════════════════════════════════════════
+    //  TAB 4: CHẤM ĐIỂM BÀI TẬP (SUBMISSIONS & GRADING)
+    // ══════════════════════════════════════════════════════════════
+
+    async function loadGradingTab() {
+        const wrapper = document.getElementById("grading-table-wrapper");
+        wrapper.innerHTML = `<div class="empty-state"><span class="spinner-sm"></span><p class="mt-2">Đang tải...</p></div>`;
+        try {
+            allCourses = await SupabaseDB.getAll("courses");
+            allUsers = await SupabaseDB.getAll("users");
+            allProgress = await SupabaseDB.getAll("progress");
+            renderGradingTable();
+            updateSummaryStats();
+        } catch (err) {
+            console.error("Lỗi tải bài nộp:", err);
+            wrapper.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Không thể tải dữ liệu bài nộp</p></div>`;
+        }
+    }
+
+    function setGradingFilter(filter) {
+        gradingFilter = filter;
+        const buttons = document.querySelectorAll("#grading-filters button");
+        buttons.forEach(btn => btn.classList.remove("active"));
+        
+        // Active button styling
+        const index = filter === "pending" ? 0 : (filter === "graded" ? 1 : 2);
+        buttons[index].classList.add("active");
+        
+        renderGradingTable();
+    }
+
+    function renderGradingTable() {
+        const wrapper = document.getElementById("grading-table-wrapper");
+        
+        // Thu thập tất cả lượt nộp bài từ bảng progress
+        const submissions = [];
+        allProgress.forEach(p => {
+            const student = allUsers.find(u => u.id === p.userId);
+            const course = allCourses.find(c => c.id === p.courseId);
+            if (!student || !course) return; // Bỏ qua nếu ko map được
+
+            if (p.homeworkSubmitted && p.homeworkImage) {
+                const isGraded = p.homeworkScore !== null && p.homeworkScore !== undefined;
+                submissions.push({
+                    progressId: p.id,
+                    studentName: student.name || student.username,
+                    studentUsername: student.username,
+                    courseTitle: course.title,
+                    type: "homework",
+                    typeLabel: "Bài tập về nhà (BTVN)",
+                    image: p.homeworkImage,
+                    score: p.homeworkScore,
+                    comment: p.teacherComment,
+                    submittedAt: p.updatedAt || p.updated_at || "",
+                    isGraded: isGraded
+                });
+            }
+
+            if (p.practiceSubmitted && p.practiceImage) {
+                const isGraded = p.practiceScore !== null && p.practiceScore !== undefined;
+                submissions.push({
+                    progressId: p.id,
+                    studentName: student.name || student.username,
+                    studentUsername: student.username,
+                    courseTitle: course.title,
+                    type: "practice",
+                    typeLabel: "Bài tập thực hành (Practice)",
+                    image: p.practiceImage,
+                    score: p.practiceScore,
+                    comment: p.teacherComment,
+                    submittedAt: p.updatedAt || p.updated_at || "",
+                    isGraded: isGraded
+                });
+            }
+        });
+
+        // Lọc theo bộ lọc
+        let filteredSubmissions = submissions;
+        if (gradingFilter === "pending") {
+            filteredSubmissions = submissions.filter(s => !s.isGraded);
+        } else if (gradingFilter === "graded") {
+            filteredSubmissions = submissions.filter(s => s.isGraded);
+        }
+
+        if (filteredSubmissions.length === 0) {
+            wrapper.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <h6>Không có bài nộp nào</h6>
+                    <p style="font-size:0.85rem">Không tìm thấy bài nộp nào phù hợp bộ lọc.</p>
+                </div>`;
+            return;
+        }
+
+        // Sắp xếp bài nộp mới nhất lên trên
+        filteredSubmissions.sort((a,b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
+
+        wrapper.innerHTML = `
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Học Viên</th>
+                        <th>Bài học</th>
+                        <th>Phần bài tập</th>
+                        <th>Ảnh bài nộp</th>
+                        <th>Ngày nộp</th>
+                        <th>Điểm số</th>
+                        <th>Nhận xét</th>
+                        <th style="text-align:right">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${filteredSubmissions.map(s => {
+                        const gradeBadge = s.isGraded 
+                            ? `<span class="badge bg-success" style="font-size:0.75rem">${s.score}/10</span>`
+                            : `<span class="badge bg-warning text-dark" style="font-size:0.75rem">Chờ chấm</span>`;
+
+                        const imgPreviewHtml = s.image.startsWith("data:image/")
+                            ? `<img src="${s.image}" class="thumb-sm" style="cursor:pointer; width:60px; height:40px" onclick="window.open('${s.image}')" title="Xem ảnh đầy đủ">`
+                            : `<span class="text-danger small">Lỗi định dạng ảnh</span>`;
+
+                        return `
+                        <tr>
+                            <td style="font-weight:600">
+                                <div>${escapeHtml(s.studentName)}</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted)">User: ${escapeHtml(s.studentUsername)}</div>
+                            </td>
+                            <td style="font-weight:500;max-width:200px">${escapeHtml(s.courseTitle)}</td>
+                            <td><span class="badge bg-info-subtle text-info">${escapeHtml(s.typeLabel)}</span></td>
+                            <td>${imgPreviewHtml}</td>
+                            <td style="color:var(--text-muted);font-size:0.82rem">${formatDate(s.submittedAt)}</td>
+                            <td>${gradeBadge}</td>
+                            <td style="font-size:0.82rem;color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(s.comment || '')}">
+                                ${escapeHtml(s.comment) || '—'}
+                            </td>
+                            <td style="text-align:right">
+                                <button class="btn-primary-custom px-2 py-1" style="font-size:0.75rem" onclick="openGradeModal(${JSON.stringify(s).replace(/"/g, '&quot;')})">
+                                    <i class="bi bi-pencil-square"></i> ${s.isGraded ? 'Sửa điểm' : 'Chấm điểm'}
+                                </button>
+                            </td>
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>`;
+    }
+
+    function openGradeModal(submission) {
+        document.getElementById("gradeProgressId").value = submission.progressId;
+        document.getElementById("gradeType").value = submission.type;
+        document.getElementById("gradeModalUser").value = submission.studentName;
+        document.getElementById("gradeModalCourse").value = submission.courseTitle;
+        document.getElementById("gradeModalTypeLabel").value = submission.typeLabel;
+        
+        document.getElementById("gradeModalImg").src = submission.image;
+        document.getElementById("gradeModalImgLink").href = submission.image;
+        
+        document.getElementById("gradeScoreInput").value = submission.score !== null ? submission.score : "";
+        document.getElementById("gradeCommentInput").value = submission.comment || "";
+
+        new bootstrap.Modal(document.getElementById("gradeModal")).show();
+    }
+
+    async function saveGrade() {
+        const id = document.getElementById("gradeProgressId").value;
+        const type = document.getElementById("gradeType").value;
+        const scoreVal = document.getElementById("gradeScoreInput").value.trim();
+        const comment = document.getElementById("gradeCommentInput").value.trim();
+
+        if (scoreVal === "") {
+            showToast("Vui lòng điền Điểm số.", "error");
+            return;
+        }
+
+        const score = parseInt(scoreVal);
+        if (isNaN(score) || score < 0 || score > 10) {
+            showToast("Điểm số phải là số nguyên từ 0 đến 10.", "error");
+            return;
+        }
+
+        const btn = document.getElementById("btnSaveGrade");
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-sm me-1"></span> Đang lưu...`;
+
+        // Chuẩn bị payload cập nhật
+        const payload = {
+            teacherComment: comment,
+            updatedAt: new Date().toISOString()
+        };
+
+        if (type === "homework") {
+            payload.homeworkScore = score;
+        } else if (type === "practice") {
+            payload.practiceScore = score;
+        }
+
+        try {
+            await SupabaseDB.update("progress", id, payload);
+            bootstrap.Modal.getInstance(document.getElementById("gradeModal")).hide();
+            showToast("✅ Đã cập nhật điểm số và nhận xét thành công!");
+            await loadGradingTab();
+        } catch (err) {
+            console.error("Lỗi lưu điểm chấm:", err);
+            showToast(`❌ Lỗi chấm điểm: ${err.message}`, "error");
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="bi bi-check-lg me-1"></i> Lưu điểm & nhận xét`;
+        }
+    }
+
+    function calcPercent(currentTime, duration) {
+        if (!duration || duration === 0 || !currentTime) return 0;
+        return Math.min(100, Math.round((currentTime / duration) * 100));
+    }
+
+    function formatDate(isoString) {
+        if (!isoString) return "—";
+        try {
+            return new Date(isoString).toLocaleString("vi-VN", {
+                day: "2-digit", month: "2-digit", year: "numeric",
+                hour: "2-digit", minute: "2-digit",
+            });
+        } catch {
+            return "—";
+        }
+    }
+</script>
+</body>
+</html>

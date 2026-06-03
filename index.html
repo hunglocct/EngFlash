@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eng Flash | Trang Chủ Giới Thiệu</title>
+    <meta name="description" content="Hệ thống học tiếng Anh trực tuyến qua video YouTube tương tác và bộ đề trắc nghiệm thông minh">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --accent: #06b6d4;
+            --accent-gold: #f59e0b;
+            --success: #10b981;
+            --bg-base: #070714;
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* ───────────── NAVBAR ───────────── */
+        .main-nav {
+            background: rgba(7, 7, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff !important;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .brand-logo {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        /* ───────────── HERO SECTION ───────────── */
+        .hero-section {
+            padding: 8rem 0 6rem;
+            position: relative;
+            text-align: center;
+            background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.18), transparent 60%);
+        }
+        
+        .hero-badge {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn-hero-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 0.9rem 2.2rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px var(--primary-glow);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.5);
+            color: #fff;
+        }
+
+        /* ───────────── FEATURES SECTION ───────────── */
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.25rem 2rem;
+            height: 100%;
+            transition: all 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .feature-icon {
+            width: 50px; height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.1));
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ───────────── STATS BANNER ───────────── */
+        .stats-section {
+            background: rgba(11, 11, 26, 0.5);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="main-nav navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <img src="src/logo.png" alt="Eng Flash Logo" style="height:32px; margin-right: 8px;">
+            Eng Flash
+        </a>
+        <div class="ms-auto" id="navbar-user">
+            <!-- Nút đăng nhập hoặc User Profile -->
+            <a href="pages/login.html" class="btn btn-sm btn-outline-light px-3" id="btn-login-nav">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ══ HERO SECTION ══ -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-badge">
+            <i class="bi bi-stars"></i> Nền tảng học tiếng Anh MVP thế hệ mới
+        </div>
+        <h1 class="hero-title">
+            Học Tiếng Anh Tương Tác<br>Qua <span>Video & Quizzi</span>
+        </h1>
+        <p class="hero-subtitle">
+            Trải nghiệm lộ trình học tập bài bản, tích hợp video chống tua, tài liệu đọc sâu, bài tập thực hành và trắc nghiệm MCQ chấm điểm tự động.
+        </p>
+        <a href="main.html" class="btn-hero-cta" id="hero-cta-btn">
+            Bắt đầu học ngay <i class="bi bi-arrow-right-short fs-5"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ══ FEATURES SECTION ══ -->
+<section class="container my-5">
+    <div class="row g-4 justify-content-center">
+        <!-- Feature 1 -->
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-window-stack"></i>
+                </div>
+                <h3 class="feature-title">Trình phát cửa sổ nổi</h3>
+                <p class="feature-desc">
+                    Tối ưu tải trang cực nhanh với Popup Player. Hệ thống chống tua giữ chân người học xem đầy đủ bài giảng để đảm bảo chất lượng.
+                </p>
+            </div>
+        </div>
+        <!-- Feature 2 -->
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3 class="feature-title">Mở khóa tuần tự</h3>
+                <p class="feature-desc">
+                    Học tập có kỷ luật. Mở khóa bài đọc và bài tập tự do, nhưng bắt buộc vượt qua bài cũ mới được phép truy cập bài học tiếp theo.
+                </p>
+            </div>
+        </div>
+        <!-- Feature 3 -->
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-clipboard2-pulse"></i>
+                </div>
+                <h3 class="feature-title">Quizzi thông minh</h3>
+                <p class="feature-desc">
+                    Làm bài trắc nghiệm MCQ củng cố kiến thức cuối mỗi video. Chấm điểm trực tiếp, lưu trữ lịch sử và phản hồi đáp án chuẩn xác.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ STATS SECTION ══ -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Học trực tuyến</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-number">5 Phần</div>
+                <div class="stat-label">Cấu trúc bài học</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-number">0s Delay</div>
+                <div class="stat-label">Tốc độ tải trang</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-number">Supabase</div>
+                <div class="stat-label">Đồng bộ đám mây</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+    <div class="container">
+        &copy; 2026 Eng Flash. Thiết kế tối ưu và hiệu quả cao.
+    </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    // Kiểm tra xem đã đăng nhập chưa
+    const user = getCurrentUser();
+    const ctaBtn = document.getElementById("hero-cta-btn");
+
+    if (user) {
+        // Đã đăng nhập: Render profile ở navbar thay thế cho nút Đăng nhập
+        renderNavbarUser();
+        // Nút CTA dẫn trực tiếp sang pages/main.html
+        ctaBtn.href = "pages/main.html";
+        ctaBtn.textContent = "Vào trang học tập";
+    } else {
+        // Chưa đăng nhập: CTA dẫn sang pages/login.html
+        ctaBtn.href = "pages/login.html";
+        ctaBtn.innerHTML = `Đăng ký học ngay <i class="bi bi-arrow-right-short fs-5"></i>`;
+    }
+</script>
+</body>
+</html>

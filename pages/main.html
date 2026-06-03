@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khóa Học Của Tôi | Eng Flash</title>
+    <meta name="description" content="Quản lý chuyên đề và lộ trình học tập cá nhân">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --accent: #06b6d4;
+            --success: #10b981;
+            --bg-base: #0b0b1a;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ───────────── NAVBAR ───────────── */
+        .main-nav {
+            background: rgba(11, 11, 26, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #fff !important;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .brand-logo {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+
+        /* ───────────── HERO ───────────── */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(6,182,212,0.08) 100%);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 3.5rem 0 2.5rem;
+            position: relative;
+        }
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ───────────── SESSION CARDS ───────────── */
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .session-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .session-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.35);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        .session-card::before {
+            content: "";
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0.8;
+        }
+
+        .session-icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .session-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .session-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .session-meta-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-track {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .btn-enter-session {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border: none;
+            border-radius: 12px;
+            padding: 0.65rem;
+            font-weight: 600;
+            font-size: 0.88rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+        .btn-enter-session:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+            color: white;
+        }
+
+        .toast-host {
+            position: fixed; top: 72px; right: 1.25rem;
+            z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .toast-item {
+            backdrop-filter: blur(12px);
+            border-radius: 12px; padding: 0.8rem 1.15rem;
+            color: #fff; font-size: 0.85rem; font-weight: 500;
+            min-width: 270px; max-width: 340px;
+            animation: toastIn 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            background: rgba(239, 68, 68, 0.9);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+        @keyframes toastIn { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:none} }
+    </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="main-nav navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="../index.html">
+            <img src="../src/logo.png" alt="Eng Flash Logo" style="height:32px; margin-right: 8px;">
+            Eng Flash
+        </a>
+        <div class="ms-auto" id="navbar-user"></div>
+    </div>
+</nav>
+
+<!-- ══ TOAST HOST ══ -->
+<div class="toast-host" id="toast-host"></div>
+
+<!-- ══ HERO ══ -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            Chào mừng, <span id="user-display-name">Học Viên</span> 👋
+        </h1>
+        <p class="text-muted mb-0" style="font-size:0.98rem">
+            Lựa chọn chuyên đề học tập để tiếp tục hành trình nâng cao khả năng tiếng Anh của bạn.
+        </p>
+    </div>
+</section>
+
+<!-- ══ SESSIONS LIST ══ -->
+<main class="container my-5 flex-grow-1">
+    <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
+        📂 Chuyên đề học tập của bạn
+    </h4>
+    <div id="sessions-container">
+        <div class="text-center py-5 text-muted">
+            <div class="spinner-border text-primary spinner-border-sm mb-3"></div>
+            <p>Đang tải danh sách chuyên đề...</p>
+        </div>
+    </div>
+</main>
+
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    // Kiểm tra đăng nhập
+    const currentUser = checkLogin();
+    if (!currentUser) throw new Error("Redirect to login");
+    renderNavbarUser();
+    initTheme();
+
+    document.getElementById("user-display-name").textContent = currentUser.name || currentUser.username;
+
+    window.addEventListener("DOMContentLoaded", loadSessions);
+
+    async function loadSessions() {
+        const container = document.getElementById("sessions-container");
+
+        try {
+            // Tải đồng thời DB User, Sessions, Lessons (courses) và Progress của người dùng
+            const [dbUser, sessions, courses, progressList] = await Promise.all([
+                SupabaseDB.getById("users", currentUser.id),
+                SupabaseDB.getAll("sessions"),
+                SupabaseDB.getAll("courses"),
+                SupabaseDB.getAll("progress", { userId: `eq.${currentUser.id}` })
+            ]);
+
+            if (dbUser) {
+                saveSession(dbUser);
+                currentUser.enrolledSessions = dbUser.enrolledSessions;
+                currentUser.bypassSequence = dbUser.bypassSequence;
+                currentUser.name = dbUser.name || dbUser.username;
+            }
+
+            // Lọc các chuyên đề đang hoạt động (isActive !== false)
+            const activeSessions = sessions.filter(s => s.isActive !== false);
+
+            // Phân quyền theo enrolledSessions
+            let enrolledList = activeSessions;
+            if (currentUser.role !== "admin" && currentUser.role !== "teacher") {
+                const enrolledIds = Array.isArray(currentUser.enrolledSessions) ? currentUser.enrolledSessions : [];
+                enrolledList = activeSessions.filter(s => enrolledIds.includes(s.id));
+            }
+
+            if (enrolledList.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5 border border-dashed rounded-4" style="border-color: var(--glass-border) !important; background: rgba(255,255,255,0.01)">
+                        <i class="bi bi-folder-x fs-1 text-muted"></i>
+                        <h5 class="mt-3 fw-bold">Chưa được gán chuyên đề nào</h5>
+                        <p class="text-muted small">Bạn chưa được phân quyền tham gia chuyên đề học tập nào. Vui lòng liên hệ Admin để được cấp quyền học.</p>
+                    </div>`;
+                return;
+            }
+
+            // Tạo Map tiến độ của từng bài học
+            const progressMap = {};
+            progressList.forEach(p => { progressMap[p.courseId] = p; });
+
+            // Render
+            let html = `<div class="sessions-grid">`;
+            
+            enrolledList.forEach(s => {
+                // Lọc các bài học thuộc chuyên đề này và đang active
+                const sessionCourses = courses.filter(c => c.sessionId === s.id && c.isActive !== false);
+                const totalLessons = sessionCourses.length;
+
+                // Tính toán số lượng bài đã xong
+                const completedLessons = sessionCourses.filter(c => progressMap[c.id]?.isCompleted === true).length;
+                const completionPct = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+
+                // Chọn icon mẫu ngẫu nhiên dựa vào ký tự đầu của id
+                const icons = ["🗣️", "📖", "📝", "🧩", "🎙️", "🎓"];
+                const iconIdx = Math.abs(hashCode(s.id)) % icons.length;
+                const emojiIcon = icons[iconIdx];
+
+                html += `
+                    <div class="session-card">
+                        <div>
+                            <div class="session-icon">${emojiIcon}</div>
+                            <h5 class="session-name">${escapeHtml(s.name)}</h5>
+                            <p class="session-desc text-truncate-2">${escapeHtml(s.description || 'Chưa có mô tả chi tiết cho chuyên đề này.')}</p>
+                        </div>
+                        <div>
+                            <div class="session-meta-info">
+                                <span><i class="bi bi-collection-play me-1"></i>${totalLessons} Bài học</span>
+                                <span class="fw-bold text-accent">${completionPct}%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: ${completionPct}%"></div>
+                            </div>
+                            <a href="session.html?sessionId=${s.id}" class="btn-enter-session">
+                                <i class="bi bi-play-circle me-1"></i> Vào học ngay
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+
+        } catch (err) {
+            console.error("Lỗi tải chuyên đề học tập:", err);
+            container.innerHTML = `
+                <div class="text-center py-5 text-danger">
+                    <i class="bi bi-exclamation-octagon fs-1"></i>
+                    <h5 class="mt-3 fw-bold">Không thể tải dữ liệu học tập</h5>
+                    <p class="small text-muted">Vui lòng kiểm tra lại cấu hình kết nối database.</p>
+                </div>`;
+        }
+    }
+
+    // Hash đơn giản tạo icon ngẫu nhiên từ id
+    function hashCode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return hash;
+    }
+
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function showToast(msg) {
+        const host = document.getElementById("toast-host");
+        const t = document.createElement("div");
+        t.className = "toast-item";
+        t.innerHTML = `<i class="bi bi-exclamation-triangle-fill me-2"></i>${msg}`;
+        host.appendChild(t);
+        setTimeout(() => t.remove(), 3500);
+    }
+</script>
+</body>
+</html>
