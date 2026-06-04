@@ -592,7 +592,7 @@
         <img src="../src/logo.png" alt="Eng Flash Logo" style="height:32px; margin-right: 8px;">
         Eng Flash
     </a>
-    <a href="#" id="navbar-back-btn" class="btn-back ms-2">
+    <a href="#" id="navbar-back-btn" class="btn-back ms-2" style="border: 1px solid; border-radius: 3px; padding: 3px;">
         <i class="bi bi-arrow-left"></i> Lộ trình
     </a>
     <div class="ms-auto" id="navbar-user"></div>
@@ -644,7 +644,7 @@
         <!-- Workspace Header -->
         <div class="workspace-header">
             <button class="btn btn-sm btn-outline-secondary" id="btn-toggle-sidebar" onclick="toggleSidebar()">
-                <i class="bi bi-layout-sidebar-inset"></i> <span class="d-none d-sm-inline">Mở rộng / Thu gọn</span>
+                <i class="bi bi-layout-sidebar-inset"></i> <span class="d-none d-sm-inline">Bài học</span>
             </button>
             <span class="text-white-50">|</span>
             <span class="fw-semibold text-white text-truncate" id="workspace-lesson-title">Đang tải...</span>
@@ -659,7 +659,7 @@
                 <i class="bi bi-book-fill tab-icon"></i> Bài đọc
             </button>
             <button class="tab-btn" data-tab="tab-homework" id="btn-tab-homework">
-                <i class="bi bi-journal-text tab-icon"></i> Bài tập về nhà
+                <i class="bi bi-journal-text tab-icon"></i> Bài tập
             </button>
             <button class="tab-btn" data-tab="tab-practice" id="btn-tab-practice">
                 <i class="bi bi-pencil-square tab-icon"></i> Thực hành
@@ -688,16 +688,16 @@
                             <!-- Placeholder -->
                             <div class="video-placeholder" id="video-placeholder" style="background-image: url('')">
                                 <div class="placeholder-content">
-                                    <h5 class="fw-bold mb-3">Sẵn sàng học bài qua Video</h5>
+                                    <h5 class="fw-bold mb-3">Học bài Ngay</h5>
                                     <p class="text-muted small mb-4">
-                                        Hãy lựa chọn chế độ phát. Sử dụng cửa sổ nổi giúp giảm tải trang, tối ưu hóa bộ nhớ và tải bài học nhanh hơn.
+                                        
                                     </p>
                                     <div>
                                         <button class="btn-play-mode-outline" onclick="openPopupPlayer()">
-                                            <i class="bi bi-window-stack"></i> Xem cửa sổ nổi (Đề xuất)
+                                            <i class="bi bi-window-stack"></i> Xem cửa sổ nổi
                                         </button>
                                         <button class="btn-play-mode" onclick="loadEmbeddedPlayer()">
-                                            <i class="bi bi-play-fill"></i> Xem trực tiếp tại đây
+                                            <i class="bi bi-play-fill"></i> Xem Ngay
                                         </button>
                                     </div>
                                 </div>
@@ -789,7 +789,7 @@
             <!-- TAB: Bài tập về nhà -->
             <div class="tab-pane lesson-body" id="tab-homework">
                 <div class="content-panel">
-                    <h2><i class="bi bi-journal-text me-2" style="color:var(--warning)"></i>Bài tập về nhà</h2>
+                    <h2><i class="bi bi-journal-text me-2" style="color:var(--warning)"></i>Bài tập</h2>
                     <div id="homework-content" class="mb-4"></div>
                     
                     <!-- Nộp bài tập về nhà dạng ảnh -->

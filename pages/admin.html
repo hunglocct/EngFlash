@@ -410,7 +410,7 @@
             <li class="nav-item">
                 <button class="nav-link" id="tab-users-btn"
                     data-bs-toggle="tab" data-bs-target="#tab-users">
-                    <i class="bi bi-people me-1"></i> Quản lý Học Viên
+                    <i class="bi bi-people me-1"></i> Quản lý User
                 </button>
             </li>
             <li class="nav-item">
@@ -422,7 +422,7 @@
             <li class="nav-item">
                 <button class="nav-link" id="tab-sessions-btn"
                     data-bs-toggle="tab" data-bs-target="#tab-sessions">
-                    <i class="bi bi-folder2-open me-1"></i> Quản lý Chuyên Đề
+                    <i class="bi bi-folder2-open me-1"></i> Quản lý khoá học
                 </button>
             </li>
         </ul>
@@ -1013,7 +1013,9 @@ function renderCoursesTable() {
                     
                     const partsBadge = parts.length > 0 
                         ? parts.map(p => `<span class="badge bg-secondary me-1" style="font-size: 0.68rem">${p}</span>`).join("")
-                        : `<span class="badge bg-dark text-muted me-1" style="font-size: 0.68rem">Chỉ có Video</span>`;
+                        : `<span class="badge text-muted me-1" style="font-size: 0.68rem; background-color: #2b6363;">
+      Chỉ có Video
+   </span>`;
 
                     const sessionObj = allSessions.find(s => s.id === c.sessionId);
                     const sessionName = sessionObj ? escapeHtml(sessionObj.name) : `<span class="text-danger small">Chưa gán</span>`;

@@ -258,7 +258,7 @@
             Eng Flash
         </a>
         <a href="main.html" class="btn btn-sm btn-outline-light ms-3 px-3">
-            <i class="bi bi-arrow-left"></i> Quay lại chuyên đề
+            <i class="bi bi-arrow-left"></i> Quay lại Khoá học
         </a>
         <div class="ms-auto" id="navbar-user"></div>
     </div>
@@ -271,10 +271,10 @@
 <section class="hero-section">
     <div class="container">
         <h1 class="hero-title">
-            Chuyên đề: <span id="session-title-label">Đang tải...</span> 🚀
+            Khoá Học: <span id="session-title-label">Đang tải...</span> 🚀
         </h1>
-        <p class="text-muted mb-0" style="font-size:0.95rem" id="roadmap-desc">
-            Học viên: <strong id="user-display-name" class="text-white">...</strong> — Học tập tuần tự, hoàn thành bài trước để mở bài tiếp theo.
+        <p class="" style="font-size:0.95rem" id="roadmap-desc;">
+            Học viên: <strong id="user-display-name" class="text-white">...</strong> — Cố gắng học tập.
         </p>
     </div>
 </section>
@@ -307,7 +307,7 @@
     const sessionId = params.get("sessionId");
 
     if (!sessionId) {
-        alert("Chuyên đề không hợp lệ! Đang quay lại trang chủ.");
+        alert("Khoá Học không hợp lệ! Đang quay lại trang chủ.");
         window.location.replace("main.html");
     }
 
@@ -336,13 +336,13 @@
             }
 
             if (!sessionObj) {
-                alert("Chuyên đề này không tồn tại hoặc đã bị ẩn!");
+                alert("Khoá Học này không tồn tại hoặc đã bị ẩn!");
                 window.location.replace("main.html");
                 return;
             }
 
             if (sessionObj.isActive === false) {
-                alert("Chuyên đề này hiện đang tạm ẩn!");
+                alert("Khoá Học này hiện đang tạm ẩn!");
                 window.location.replace("main.html");
                 return;
             }
@@ -351,7 +351,7 @@
             if (currentUser.role !== "admin" && currentUser.role !== "teacher") {
                 const enrolledSessions = Array.isArray(currentUser.enrolledSessions) ? currentUser.enrolledSessions : [];
                 if (!enrolledSessions.includes(sessionId)) {
-                    alert("Bạn không được phân quyền học chuyên đề này! Vui lòng liên hệ Admin.");
+                    alert("Bạn không được phân quyền học Khoá Học này! Vui lòng liên hệ Admin.");
                     window.location.replace("main.html");
                     return;
                 }
