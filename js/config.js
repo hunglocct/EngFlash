@@ -74,63 +74,30 @@
  */
 
 // ============================================================
-// SUPABASE CONFIGURATION
+// SERVER CONFIGURATION
 // ============================================================
 
-/** URL project Supabase của bạn */
-const SUPABASE_URL = "https://oqvezzdyvviqgmdudcgp.supabase.co";
-
-/**
- * Supabase Anon Key (publishable — an toàn để dùng ở frontend).
- * Key này CHỈ có quyền theo RLS policy bạn đã cài đặt.
- */
-const SUPABASE_KEY = "sb_publishable_aDudP79Gv3j9oQcKOaM_zw_NltU8n5J";
-
-/** Base URL cho PostgREST API */
-const REST_BASE = `${SUPABASE_URL}/rest/v1`;
-
-// NPOINT users has been migrated to Supabase users table
+/** Base URL cho API trung gian của Server */
+const REST_BASE = "/api";
 
 // ============================================================
-// DANH SÁCH USER FALLBACK
-// Dùng khi /users API không khả dụng.
-// ============================================================
-const FALLBACK_USERS = [
-    { id: "u1", username: "admin",  password: "admin123", role: "admin", name: "Quản Trị Viên" },
-    { id: "u2", username: "user1",  password: "user123",  role: "user",  name: "Nguyễn Văn An"  },
-    { id: "u3", username: "user2",  password: "user456",  role: "user",  name: "Trần Thị Bình"  },
-];
-
-// ============================================================
-// SUPABASE DB — Lớp trừu tượng REST CRUD
+// SERVER DB INTERFACE — Lớp tương tác với API của Server
 // ============================================================
 
-/**
- * SupabaseDB - Wrapper thuần fetch cho Supabase PostgREST API.
- *
- * Không cần @supabase/supabase-js (SDK nặng ~200KB).
- * Tất cả thao tác là 1 HTTP request duy nhất.
- *
- * Tài liệu PostgREST: https://postgrest.org/en/stable/references/api.html
- */
 const SupabaseDB = {
 
     // ─── PRIVATE HELPERS ──────────────────────────────────────
 
-    /** Tạo headers chuẩn cho mọi request đến Supabase */
+    /** Tạo headers chuẩn cho request gửi lên máy chủ */
     _headers(extra = {}) {
         return {
-            "apikey":        SUPABASE_KEY,          // Xác thực với Supabase gateway
-            "Authorization": `Bearer ${SUPABASE_KEY}`, // Xác thực PostgREST
             "Content-Type":  "application/json",
             ...extra,
         };
     },
 
     /**
-     * Tạo URL với filter theo chuẩn PostgREST.
-     * Ví dụ: filters = { userId: "eq.u1", limit: 1 }
-     * → /rest/v1/progress?select=*&userId=eq.u1&limit=1
+     * Tạo URL gửi lên máy chủ proxy.
      */
     _url(table, filters = {}) {
         const params = new URLSearchParams();

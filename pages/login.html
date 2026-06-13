@@ -433,25 +433,22 @@
          * @returns {Promise<object|null>} User object nếu thành công, null nếu thất bại
          */
         async function authenticateUser(username, password) {
-            // 1. Thử gọi Supabase
             try {
-                const list = await SupabaseDB.getAll("users", { username: `eq.${username}` });
-                const found = list.find(u =>
-                    u.username === username && u.password === password
-                );
-                if (found) return found;
-
-                // Nếu kết nối thành công nhưng không tìm thấy user
-                if (list.length > 0) return null;
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                if (res.ok) {
+                    return await res.json();
+                }
+                return null;
             } catch (err) {
-                console.warn("[AUTH] Supabase users không khả dụng, dùng fallback hardcode.", err.message);
+                console.error("[AUTH] Lỗi đăng nhập qua server:", err);
+                return null;
             }
-
-            // 2. Fallback về danh sách hardcode
-            const found = FALLBACK_USERS.find(u =>
-                u.username === username && u.password === password
-            );
-            return found || null;
         }
     </script>
 </body>
