@@ -2,10 +2,10 @@
   "name": "eng-flash-elearning",
   "version": "1.0.0",
   "description": "Eng Flash E-Learning platform with secure Express.js server backend",
-  "main": "server.js",
+  "main": "api/index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node api/index.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
